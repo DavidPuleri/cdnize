@@ -13,7 +13,7 @@ object Tools {
     val t0 = System.nanoTime()
     val result = block // call-by-name
     val t1 = System.nanoTime()
-    (result, (t1 - t0) / 10000)
+    (result, (t1 - t0) / 100000)
   }
   def swap[T](o: Option[Future[T]]): Future[Option[T]] = o.map(_.map(Some(_))).getOrElse(Future.successful(None))
 

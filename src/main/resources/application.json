@@ -1,7 +1,7 @@
 {
   "port": 18376,
-  "baseFolder": "/Users/david/Workspace/cms/public/userfiles/ogcnice/",
-  "cacheFolder": "/tmp/cache/",
+  "baseFolder": "/data/base",
+  "cacheFolder": "/data/cache/",
   "akka": {
     "loglevel": "DEBUG"
   }

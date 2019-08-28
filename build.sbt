@@ -1,6 +1,6 @@
-organization := "ekinox"
+organization := "davidpuleri"
 
-name := "cdn"
+name := "cdnize"
 
 version := "0.1"
 
@@ -23,16 +23,34 @@ libraryDependencies ++= Seq(
 )
 
 enablePlugins(DockerPlugin)
+val versionNumber = settingKey[String]("The application version")
+
+versionNumber := {
+  IO.readLines(new File("VERSION")).mkString
+}
+
+imageNames in docker := Seq(
+  // Sets the latest tag
+  ImageName(s"docker-registry.ekinox.design/${organization.value}/${name.value}:latest"),
+
+  // Sets a name with a tag that contains the project version
+  ImageName(
+    namespace = Some("ekinox"),
+    repository = name.value,
+    tag = Some(versionNumber.value)
+  )
+)
 
 dockerfile in docker := {
   val artifact: File = assembly.value
   val artifactTargetPath = s"/app/${artifact.name}"
+
   new Dockerfile {
     from("openjdk:11-jre")
     add(artifact, artifactTargetPath)
     entryPoint("java", "-jar", artifactTargetPath)
-    volume("/data")
-
+    volume("/data/base")
+    volume("/data/cache")
   }
 }
 
