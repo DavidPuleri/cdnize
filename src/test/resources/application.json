@@ -1,0 +1,7 @@
+{
+  "port": 18376,
+  "baseFolder": "/tmp/data/",
+  "akka": {
+    "loglevel": "DEBUG"
+  }
+}
