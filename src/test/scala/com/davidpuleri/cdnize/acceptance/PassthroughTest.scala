@@ -14,7 +14,7 @@ class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
 
   val baseUrl: String = getClass().getResource("/data").getPath
   val cacheFolder: String = getClass().getResource("/cache/").getPath
-  implicit def default(implicit system: ActorSystem) = RouteTestTimeout(5.seconds)
+  implicit def default(implicit system: ActorSystem) = RouteTestTimeout(60.seconds)
 
   "Passthrough service" should {
     "display file without altering" in {
