@@ -51,6 +51,7 @@ dockerfile in docker := {
     entryPoint("java", "-jar", artifactTargetPath)
     volume("/data/base")
     volume("/data/cache")
+    expose(18376)
   }
 }
 
