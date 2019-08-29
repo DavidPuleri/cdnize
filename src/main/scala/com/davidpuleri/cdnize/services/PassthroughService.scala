@@ -3,19 +3,19 @@ package com.davidpuleri.cdnize.services
 import java.io.File
 import java.nio.file.{Files, NoSuchFileException, Path, Paths}
 
+import akka.event.LoggingAdapter
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.davidpuleri.cdnize.converters.Tools
 import com.davidpuleri.cdnize.converters.Tools._
 import com.sksamuel.scrimage.nio.{GifWriter, ImageWriter, JpegWriter, PngWriter}
 import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import akka.event.LoggingAdapter
-import akka.http.scaladsl.model.StatusCodes
-import com.davidpuleri.cdnize.converters.Tools
+import scala.concurrent.Future
 
-class PassthroughService(baseFolder: String, cacheFolder: String)(implicit log: LoggingAdapter) {
+class PassthroughService(baseFolder: String, cacheFolder: String )(implicit val log: LoggingAdapter) extends Loggable {
 
 
   protected val fileRoute: Route =
@@ -99,6 +99,9 @@ class PassthroughService(baseFolder: String, cacheFolder: String)(implicit log: 
     imageWriter
   }
 
+
+
   val routes: Route = fileRoute
+
 
 }
