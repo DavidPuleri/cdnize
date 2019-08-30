@@ -1,5 +1,5 @@
 {
-  "port": 18376,
+  "port": 80,
   "baseFolder": "/data/base",
   "cacheFolder": "/data/cache/",
   "akka": {
