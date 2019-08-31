@@ -7,8 +7,8 @@
     "actor": {
       "default-dispatcher": {
         "fork-join-executor": {
-          "parallelism-max": 550,
-          "parallelism-factor": 40
+          "parallelism-max": 2000,
+          "parallelism-factor": 2000
         }
       }
     }

@@ -16,7 +16,15 @@ object Application extends App with RouteConcatenation with Loggable {
 
   implicit val system: ActorSystem = ActorSystem()
 
-  system.logConfiguration()
+  val config2 = system.settings.config.getConfig("akka.actor.default-dispatcher")
+  println(s"type : ${config2.getString("type")}")
+  println(s"executor : ${config2.getString("executor")}")
+  println(s"throughput : ${config2.getString("throughput")}")
+  println(s"fork-join-executor.parallelism-min : ${config2.getString("fork-join-executor.parallelism-min")}")
+  println(s"fork-join-executor.parallelism-max : ${config2.getString("fork-join-executor.parallelism-max")}")
+  println(s"fork-join-executor.parallelism-factor : ${config2.getString("fork-join-executor.parallelism-factor")}")
+
+
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val log: LoggingAdapter = system.log
 
