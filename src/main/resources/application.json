@@ -3,6 +3,15 @@
   "baseFolder": "/data/base",
   "cacheFolder": "/data/cache/",
   "akka": {
-    "loglevel": "INFO"
+    "loglevel": "INFO",
+    "actor": {
+      "default-dispatcher": {
+        "fork-join-executor": {
+          "parallelism-max": 250,
+          "parallelism-factor": 10
+        }
+      }
+    }
+
   }
 }

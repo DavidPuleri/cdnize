@@ -16,7 +16,7 @@ RUN add-apt-repository \
     $(lsb_release -cs) \
     stable"
 
-RUN apt-get update &&  apt-get install -y getenvoy-envoy
+RUN apt-get update &&  apt-get install -y getenvoy-envoy=1.11.1
 
 ADD "target/scala-2.12/cdnize-assembly-0.1.jar" "/app.jar"
 COPY envoy/runner.sh /

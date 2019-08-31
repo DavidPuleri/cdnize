@@ -15,6 +15,8 @@ import scala.util.{Failure, Success}
 object Application extends App with RouteConcatenation with Loggable {
 
   implicit val system: ActorSystem = ActorSystem()
+
+  system.logConfiguration()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val log: LoggingAdapter = system.log
 
