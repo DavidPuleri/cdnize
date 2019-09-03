@@ -27,5 +27,7 @@ VOLUME "/data/base"
 VOLUME "/data/cache"
 
 EXPOSE 8080
+EXPOSE 80
+EXPOSE 8001
 
-CMD /runner.sh app.jar $SERVICE_NAME
+CMD /runner.sh app.jar $SERVICE_NAME $CUSTOM_CONFIG
