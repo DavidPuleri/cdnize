@@ -10,14 +10,18 @@ import com.davidpuleri.cdnize.services.{HealthService, Loggable, PassthroughServ
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 object Application extends App with RouteConcatenation with Loggable {
 
-  val c = Option {
+  private val maybeProvidedConfig: Option[Config] = Try(
     ConfigFactory.parseString(System.getenv("CDNIZE_CONFIG"))
-  }.getOrElse(ConfigFactory.load("application.json"))
-  implicit val system: ActorSystem = ActorSystem("CdnIze", c)
+  ).toOption
+
+  private val maybeConfig: Config =
+    maybeProvidedConfig.getOrElse(ConfigFactory.load())
+
+  implicit val system: ActorSystem = ActorSystem("cms-api", maybeConfig)
 
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val log: LoggingAdapter = system.log
