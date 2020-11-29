@@ -26,7 +26,7 @@ object Application extends App with RouteConcatenation with Loggable {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val log: LoggingAdapter = system.log
 
-  private val config = new AppConfig(c)
+  private val config = new AppConfig(maybeConfig)
   private val passthroughService = new PassthroughService(config.baseFolder, config.cacheFolder)
   val routes: Route = logAccessRequest {
     new HealthService().routes ~ passthroughService.routes
