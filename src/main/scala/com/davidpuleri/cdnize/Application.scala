@@ -15,8 +15,8 @@ import scala.util.{Failure, Success}
 object Application extends App with RouteConcatenation with Loggable {
 
   val c = Option {
-    ConfigFactory.parseString(System.getenv("CUSTOM_CONFIG"))
-  }.getOrElse(ConfigFactory.load("application.conf"))
+    ConfigFactory.parseString(System.getenv("CDNIZE_CONFIG"))
+  }.getOrElse(ConfigFactory.load("application.json"))
   implicit val system: ActorSystem = ActorSystem("CdnIze", c)
 
   implicit val materializer: ActorMaterializer = ActorMaterializer()
