@@ -24,7 +24,7 @@ object Application extends App with RouteConcatenation with Loggable {
   private val maybeConfig: Config =
     maybeProvidedConfig.getOrElse(ConfigFactory.load())
 
-  implicit val system: ActorSystem = ActorSystem("cms-api", maybeConfig)
+  implicit val system: ActorSystem = ActorSystem("cdnizei", maybeConfig)
 
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val log: LoggingAdapter = system.log
