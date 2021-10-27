@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
   "com.sksamuel.scrimage" %% "scrimage-core" % "2.1.8",
   "com.sksamuel.scrimage" %% "scrimage-io-extra" % "2.1.8",
   "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
+  "ch.qos.logback"         % "logback-classic"      % "1.2.6",
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   "org.scalactic" %% "scalactic" % "3.0.8",
