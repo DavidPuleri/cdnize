@@ -8,11 +8,14 @@ import akka.stream.ActorMaterializer
 import com.davidpuleri.cdnize.config.AppConfig
 import com.davidpuleri.cdnize.services.{HealthService, Loggable, PassthroughService}
 import com.typesafe.config.{Config, ConfigFactory}
+import kamon.Kamon
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
 object Application extends App with RouteConcatenation with Loggable {
+
+  Kamon.init(ConfigFactory.load("kamon.conf"))
 
   private val maybeProvidedConfig: Option[Config] = Try(
     ConfigFactory.parseString(System.getenv("CDNIZE_CONFIG"))

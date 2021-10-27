@@ -1,3 +1,5 @@
+import Dependencies._
+
 organization := "davidpuleri"
 
 name := "cdnize"
@@ -22,6 +24,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 )
 
+libraryDependencies ++= Kamon.all
 enablePlugins(DockerPlugin)
 val versionNumber = settingKey[String]("The application version")
 

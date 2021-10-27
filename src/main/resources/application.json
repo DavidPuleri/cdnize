@@ -3,6 +3,6 @@
   "baseFolder": "/data/base",
   "cacheFolder": "/data/cache/",
   "akka": {
-    "loglevel": "INFO"
+    "loglevel": "WARNING"
   }
 }
