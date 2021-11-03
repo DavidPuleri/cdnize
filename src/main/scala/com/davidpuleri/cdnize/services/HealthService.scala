@@ -6,6 +6,8 @@ import akka.http.scaladsl.server.Route
 class HealthService {
 
   val routes: Route = path("health") {
-    complete("OK")
+    get {
+      complete("OK")
+    }
   }
 }
