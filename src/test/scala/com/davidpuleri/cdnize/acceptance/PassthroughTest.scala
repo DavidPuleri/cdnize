@@ -6,14 +6,18 @@ import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
 import com.davidpuleri.cdnize.services.PassthroughService
 import org.scalatest.{Matchers, WordSpec}
 
+import javax.imageio.ImageIO
 import scala.concurrent.duration.DurationInt
+import scala.reflect.io.File
 
 class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
 
   implicit val log = system.log
 
-  val baseUrl: String = getClass().getResource("/data").getPath
-  val cacheFolder: String = getClass().getResource("/cache/").getPath
+  val baseUrl = "target/scala-2.12/test-classes/data/"
+  val cacheFolder = "target/scala-2.12/test-classes/cache/"
+
+
   implicit def default(implicit system: ActorSystem) = RouteTestTimeout(60.seconds)
 
   "Passthrough service" should {
@@ -40,6 +44,7 @@ class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
 
       val service = new PassthroughService(baseUrl, cacheFolder)
 
+      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/700-images-data-1-data-2-IMG_1499-1.JPG").toFile.delete()
       Get("/images/data-1/data-2/IMG_1499-1.JPG?width=700") ~> service.routes ~> check {
         status.intValue() shouldBe 200
       }

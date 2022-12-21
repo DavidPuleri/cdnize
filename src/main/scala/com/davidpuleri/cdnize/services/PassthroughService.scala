@@ -1,17 +1,18 @@
 package com.davidpuleri.cdnize.services
 
-import java.io.File
-import java.nio.file.{Files, NoSuchFileException, Path, Paths}
-
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.davidpuleri.cdnize.converters.Tools
 import com.davidpuleri.cdnize.converters.Tools._
+import com.sksamuel.scrimage.ImmutableImage
+import com.sksamuel.scrimage.format.{Format, FormatDetector}
 import com.sksamuel.scrimage.nio.{GifWriter, ImageWriter, JpegWriter, PngWriter}
-import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 
+import java.io.{File, FileInputStream}
+import java.nio.file.{Files, NoSuchFileException, Path, Paths}
+import java.util.Optional
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -39,13 +40,14 @@ class PassthroughService(baseFolder: String, cacheFolder: String )(implicit val 
                 case false =>
                   Files.exists(chosenResourcePath) match {
                     case true =>
-                      val image = Image.fromPath(chosenResourcePath)
-                      val writer: ImageWriter = extractImageWriter(image)
+                      val image1: ImmutableImage = ImmutableImage.loader().fromPath(chosenResourcePath)
+
+                      val writer: ImageWriter = extractImageWriter(image1,chosenResourcePath.toString)
                       val file = new File(cachedFilePath.toString)
                       log.debug(s"Loading file ${cachedFilePath.toString} from the filesystem")
                       val output = time {
-                        image.scaleToWidth(width.toInt)
-                          .output(file)(writer)
+                        image1.scaleToWidth(width.toInt)
+                          .output(writer, file)
                       }
                       log.debug(s"Image resized in ${output._2}ms")
                       getFromFile(cachedFilePath.toString)
@@ -83,15 +85,19 @@ class PassthroughService(baseFolder: String, cacheFolder: String )(implicit val 
     result._1
   }
 
-  private def extractImageWriter(image: Image): ImageWriter = {
+  private def extractImageWriter(image: ImmutableImage, sourceFile: String): ImageWriter = {
 
-    val imageWriter = FormatDetector.detect(image.bytes) match {
+    def toScalaOption[A](maybeA: Optional[A]): Option[A] =
+      if (maybeA.isEmpty) None else Some(maybeA.get)
+
+    val value: Option[Format] = toScalaOption(FormatDetector.detect(new FileInputStream(sourceFile)))
+    val imageWriter = value match {
       case Some(Format.GIF) =>
-        GifWriter(true)
+        GifWriter.Default
       case Some(Format.JPEG) =>
-        JpegWriter(7, true)
+        new JpegWriter().withCompression(70).withProgressive(true)
       case Some(Format.PNG) =>
-        PngWriter(7)
+        new PngWriter().withCompression(7)
       case None =>
         throw new Throwable("Unsupported format to resize")
     }

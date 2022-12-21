@@ -30,6 +30,9 @@ object Application extends App with RouteConcatenation with Loggable {
   implicit val log: LoggingAdapter = system.log
 
   private val config = new AppConfig(maybeConfig)
+  log.info(s"Application loaded with the following settings:")
+  log.info(s"- Base folder: ${config.baseFolder}")
+  log.info(s"- Cache folder: ${config.cacheFolder}")
   private val passthroughService = new PassthroughService(config.baseFolder, config.cacheFolder)
   val routes: Route = logAccessRequest {
     new HealthService().routes ~ passthroughService.routes
