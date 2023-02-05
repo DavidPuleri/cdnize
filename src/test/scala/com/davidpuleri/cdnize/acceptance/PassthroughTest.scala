@@ -6,9 +6,7 @@ import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
 import com.davidpuleri.cdnize.services.PassthroughService
 import org.scalatest.{Matchers, WordSpec}
 
-import javax.imageio.ImageIO
 import scala.concurrent.duration.DurationInt
-import scala.reflect.io.File
 
 class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
 
@@ -49,6 +47,19 @@ class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
       }
       java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/width-700-IMG_1499-1.JPG").toFile.exists() shouldBe true
       Get("/images/data-1/data-2/IMG_1499-1.JPG?width=700") ~> service.routes ~> check {
+        status.intValue() shouldBe 200
+      }
+    }
+
+    "display file in smaller size by height" in {
+
+      val service = new PassthroughService(baseUrl, cacheFolder)
+      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/height-700-IMG_1499-3.JPG").toFile.delete()
+      Get("/images/data-1/data-2/IMG_1499-3.JPG?height=700") ~> service.routes ~> check {
+        status.intValue() shouldBe 200
+      }
+      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/height-700-IMG_1499-3.JPG").toFile.exists() shouldBe true
+      Get("/images/data-1/data-2/IMG_1499-3.JPG?height=700") ~> service.routes ~> check {
         status.intValue() shouldBe 200
       }
     }
