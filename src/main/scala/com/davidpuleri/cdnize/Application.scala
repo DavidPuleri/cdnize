@@ -22,7 +22,10 @@ object Application extends App with RouteConcatenation with Loggable {
   ).toOption
 
   private val maybeConfig: Config =
-    maybeProvidedConfig.getOrElse(ConfigFactory.load())
+    maybeProvidedConfig.getOrElse{
+      log.info("Unable to find configuration in environment variable CDNIZE_CONFIG, loading default")
+      ConfigFactory.load()
+    }
 
   implicit val system: ActorSystem = ActorSystem("cdnizei", maybeConfig)
 
