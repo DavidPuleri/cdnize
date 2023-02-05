@@ -17,13 +17,13 @@ object Application extends App with RouteConcatenation with Loggable {
 
   Kamon.init(ConfigFactory.load("kamon.conf"))
 
-  private val maybeProvidedConfig: Option[Config] = Try(
+  private def maybeProvidedConfig: Option[Config] = Try(
     ConfigFactory.parseString(System.getenv("CDNIZE_CONFIG"))
   ).toOption
 
-  private val maybeConfig: Config =
+  private def maybeConfig: Config =
     maybeProvidedConfig.getOrElse{
-      log.info("Unable to find configuration in environment variable CDNIZE_CONFIG, loading default")
+     println("Unable to find configuration in environment variable CDNIZE_CONFIG, loading default")
       ConfigFactory.load()
     }
 
