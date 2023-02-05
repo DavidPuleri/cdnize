@@ -5,6 +5,7 @@ import scala.concurrent.Future
 
 object Tools {
 
+
   def normalise(input: String): String = {
     input.replaceAll("/", "-")
   }
@@ -15,6 +16,7 @@ object Tools {
     val t1 = System.nanoTime()
     (result, (t1 - t0) / 100000)
   }
+
   def swap[T](o: Option[Future[T]]): Future[Option[T]] = o.map(_.map(Some(_))).getOrElse(Future.successful(None))
 
 }

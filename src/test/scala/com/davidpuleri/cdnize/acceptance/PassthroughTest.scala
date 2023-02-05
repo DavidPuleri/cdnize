@@ -43,8 +43,11 @@ class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
     "display file in smaller size" in {
 
       val service = new PassthroughService(baseUrl, cacheFolder)
-
-      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/700-images-data-1-data-2-IMG_1499-1.JPG").toFile.delete()
+      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/width-700-IMG_1499-1.JPG").toFile.delete()
+      Get("/images/data-1/data-2/IMG_1499-1.JPG?width=700") ~> service.routes ~> check {
+        status.intValue() shouldBe 200
+      }
+      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/width-700-IMG_1499-1.JPG").toFile.exists() shouldBe true
       Get("/images/data-1/data-2/IMG_1499-1.JPG?width=700") ~> service.routes ~> check {
         status.intValue() shouldBe 200
       }
@@ -52,10 +55,17 @@ class PassthroughTest extends WordSpec with Matchers with ScalatestRouteTest  {
 
     "force refresh one image" in {
 
+      java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/IMG_1499-2.JPG").toFile.delete()
       val service = new PassthroughService(baseUrl, cacheFolder)
 
       Get("/images/data-1/data-2/IMG_1499-2.JPG?width=700&forceRefresh=1") ~> service.routes ~> check {
         status.intValue() shouldBe 200
+        java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/width-700-IMG_1499-2.JPG").toFile.exists() shouldBe true
+      }
+
+      Get("/images/data-1/data-2/IMG_1499-2.JPG?width=700&forceRefresh=1") ~> service.routes ~> check {
+        status.intValue() shouldBe 200
+        java.nio.file.Paths.get("target/scala-2.12/test-classes/cache/images/data-1/data-2/width-700-IMG_1499-2.JPG").toFile.exists() shouldBe true
       }
     }
   }
