@@ -1,7 +1,7 @@
 {
-  "port": 9991,
-  "baseFolder": "/tmp/data/base/",
-  "cacheFolder": "/tmp/data/cache/",
+  "port": 80,
+  "baseFolder": "/data/base/",
+  "cacheFolder": "/data/cache/",
   "akka": {
     "loglevel": "DEBUG"
   }
