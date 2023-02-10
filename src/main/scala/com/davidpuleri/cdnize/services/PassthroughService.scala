@@ -24,13 +24,13 @@ class PassthroughService(baseFolder: String, cacheFolder: String)(implicit val l
 
         case class Transformation(method: String, value: Int)
 
-        val transformation: Option[Transformation] = (width, height) match {
+        def transformation: Option[Transformation] = (width, height) match {
           case (None, (Some(h))) => Some(Transformation("height", h.toInt))
           case (Some(w), None) => Some(Transformation("width", w.toInt))
           case (_, _) => None
         }
 
-        val sourceFile = FilePath(s"${baseFolder}${uri.toString()}").ifExist
+        def sourceFile = FilePath(s"${baseFolder}${uri.toString()}").ifExist
         (sourceFile, transformation) match {
           case (Some(s), Some(w)) =>
 
