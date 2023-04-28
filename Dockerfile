@@ -10,7 +10,7 @@ RUN apt-get install -y \
     software-properties-common
 
 
-ADD "target/scala-2.12/cdnize-assembly-0.1.jar" "/app.jar"
+ADD "target/scala-2.13/cdnize-assembly-0.1.jar" "/app.jar"
 
 VOLUME "/data/base"
 VOLUME "/data/cache"
