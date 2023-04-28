@@ -6,14 +6,14 @@ name := "cdnize"
 
 version := "0.1"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.1"
 
-val akkaVersion = "2.5.23"
+val akkaVersion = "2.6.17"
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.4",
-  "com.typesafe.akka" %% "akka-http" % "10.1.8",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.8",
+  "com.typesafe.akka" %% "akka-http" % "10.2.10",
+  "com.typesafe.akka" %% "akka-http-testkit" % "10.2.10",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
    "com.sksamuel.scrimage" % "scrimage-core" % "4.0.32",
   "org.slf4j"              % "slf4j-api"            % "1.7.30",

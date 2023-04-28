@@ -2,6 +2,7 @@ package com.davidpuleri.cdnize.services
 
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.davidpuleri.cdnize.converters.Tools._
@@ -33,8 +34,6 @@ class PassthroughService(baseFolder: String, cacheFolder: String)(implicit val l
         def sourceFile = FilePath(s"${baseFolder}${uri.toString()}").ifExist
         (sourceFile, transformation) match {
           case (Some(s), Some(w)) =>
-
-
             val cachedVersion = FilePath(s"${cacheFolder}${uri.toString()}").prefixFilename(s"${w.method}-${w.value}")
             cachedVersion.exists() match {
               case true =>
@@ -59,6 +58,9 @@ class PassthroughService(baseFolder: String, cacheFolder: String)(implicit val l
           case (Some(s), None) =>
             Kamon.counter("Not loaded from cache").withTag("Image", "Cache Breakdown").increment()
             getFromFile(s.file())
+          case (_,_) =>
+            Kamon.counter("Source image not found").withTag("Image", "Cache Breakdown").increment()
+            complete(StatusCodes.NotFound)
         }
       }
     }
@@ -110,7 +112,6 @@ class PassthroughService(baseFolder: String, cacheFolder: String)(implicit val l
   }
 
 
-  val routes: Route = fileRoute
-
+  val routes: Route = respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*"))(fileRoute)
 
 }

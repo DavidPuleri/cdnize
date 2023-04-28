@@ -4,11 +4,11 @@ import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.{Route, RouteConcatenation}
-import akka.stream.ActorMaterializer
 import com.davidpuleri.cdnize.config.AppConfig
 import com.davidpuleri.cdnize.services.{HealthService, Loggable, PassthroughService}
 import com.typesafe.config.{Config, ConfigFactory}
 import kamon.Kamon
+import kamon.instrumentation.akka.http.ServerFlowWrapper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
@@ -21,27 +21,30 @@ object Application extends App with RouteConcatenation with Loggable {
     ConfigFactory.parseString(System.getenv("CDNIZE_CONFIG"))
   ).toOption
 
-  private def maybeConfig: Config =
+  implicit private def config: Config =
     maybeProvidedConfig.getOrElse{
      println("Unable to find configuration in environment variable CDNIZE_CONFIG, loading default")
       ConfigFactory.load()
     }
 
-  implicit val system: ActorSystem = ActorSystem("cdnizei", maybeConfig)
+  implicit val system: ActorSystem = ActorSystem("cdnizei", config)
 
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val log: LoggingAdapter = system.log
 
-  private val config = new AppConfig(maybeConfig)
+  private val applicationConfig = new AppConfig(config)
   log.info(s"Application loaded with the following settings:")
-  log.info(s"- Base folder: ${config.baseFolder}")
-  log.info(s"- Cache folder: ${config.cacheFolder}")
-  private val passthroughService = new PassthroughService(config.baseFolder, config.cacheFolder)
+  log.info(s"- Base folder: ${applicationConfig.baseFolder}")
+  log.info(s"- Cache folder: ${applicationConfig.cacheFolder}")
+  private val passthroughService = new PassthroughService(applicationConfig.baseFolder, applicationConfig.cacheFolder)
+
+
+
   val routes: Route = logAccessRequest {
     new HealthService().routes ~ passthroughService.routes
   }
 
-  Http().bindAndHandle(routes, "0.0.0.0", config.port).onComplete {
+  val flow= ServerFlowWrapper(routes, "0.0.0.0", applicationConfig.port)
+  Http().newServerAt("0.0.0.0", applicationConfig.port).bindFlow(flow).onComplete {
     case Success(value) =>
       log.info(s"Server started on ${value.localAddress}")
     case Failure(exception) =>
@@ -49,3 +52,4 @@ object Application extends App with RouteConcatenation with Loggable {
   }
 
 }
+
